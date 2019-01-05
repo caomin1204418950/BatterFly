@@ -1,0 +1,7 @@
+<div class="tags">
+  <span class="my-tag" *ngFor="let item of tags;let i=index">{{item}}<i class="icon-close icofont icofont-close"
+      (click)="removeTag(i)"></i></span>
+  <button class="button-new-tag" *ngIf="!new" (click)="inputShow()"><span>+ 新标签</span></button>
+  <input maxlength="20" type="text" *ngIf="new" [(ngModel)]="newTagValue" (blur)="inputSure()" (keyup)="($event.which===13)?inputSure():''" appAutoFocus/>
+  <!-- <input type="text" (blur)="inputSure()"/> -->
+</div>

@@ -1,0 +1,132 @@
+import { Component, OnInit } from '@angular/core';
+import { NgbDateParserFormatter, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap'
+
+import { InterfaceService } from '../../../shared/services/http/interfaces.service'
+import { PopService } from '../../../shared/services/pop/pop.service'
+
+@Component({
+  selector: 'app-publish',
+  templateUrl: './publish.component.html',
+  styleUrls: ['./publish.component.scss']
+})
+export class PublishComponent implements OnInit {
+
+  public rows = []
+  public total
+  public totalPage
+  public pageNum
+  public articleContent
+  public getArticleId
+  public showMark
+
+  public searchItems
+	public items
+  public flag = true
+
+  constructor(
+    public parserFormatter: NgbDateParserFormatter,
+    private interfaceService: InterfaceService,
+    private popService: PopService
+  ) {
+    this.searchItems = new Items()
+		this.items = new Items()
+  }
+
+  ngOnInit() {
+    this.searchItems.status = ''
+    this.search(1, '')
+    this.showMark = false
+  }
+  
+  checkMark (){
+    this.showMark = !this.showMark
+  }
+  dataJud() {
+		if (this.searchItems.starttime && this.searchItems.endtime) {
+			if (
+				this.searchItems.starttime.year > this.searchItems.endtime.year ||
+				this.searchItems.starttime.month > this.searchItems.endtime.month ||
+				this.searchItems.starttime.day > this.searchItems.endtime.day
+			) {
+        this.popService.addToast({msg:'开始时间不能大于结束时间！',type:'error'})
+				this.flag = false
+			} else {
+				this.flag = true
+			}
+		}
+	}
+  search(e, type) {
+		if (!type) {
+      this.searchItems = new Items()
+      this.searchItems.status = ''
+		}
+		this.dataJud()
+		if (this.flag) {
+			this.items.starttime = this.searchItems.starttime ? this.parserFormatter.format(this.searchItems.starttime)+" 00:00:00" : ""
+			this.items.endtime = this.searchItems.endtime ? this.parserFormatter.format(this.searchItems.endtime)+" 00:00:00" : ""
+			this.items.title = this.searchItems.title
+			this.items.status = this.searchItems.status
+      let searchItems = Object.assign(this.items, { pageSize: 10, pageNum: e })
+			this.interfaceService.getArticlesList(searchItems).then((result) => {
+				this.rows = result.list
+				this.total = result.total
+				this.totalPage = result.pages
+				this.pageNum = result.pageNum
+			})
+		}
+  }
+  // 文章展示
+  showArticle (row){
+    // document.getElementById("articleContent").innerHTML(row.content)
+    this.articleContent = row.content
+  }
+  // 取消定时发布
+  cancelTime (row){
+    let params = {
+      articlesDetailId: row.id
+    }
+    this.interfaceService.cancelTimeArticle(params).then((result) => {
+      if(result){
+        this.popService.addToast({ type: 'success', msg: '取消定时发布成功' })
+        this.search(this.pageNum, '1')
+      }else {
+        this.popService.addToast({ type: 'erroe', msg: '取消定时发布成功失败' })
+        this.search(this.pageNum, '1')
+      }
+    })
+  }
+  getArticleIdF (row){
+    this.getArticleId = row.id
+  }
+  withdrawArticleB (){
+    let params = {
+      articlesDetailId: this.getArticleId,
+      status: 3
+    }
+    this.interfaceService.withdrawArticle(params).then((result) => {
+      if(result){
+        this.popService.addToast({ type: 'success', msg: '文章撤回成功' })
+        this.search(this.pageNum, '1')
+      }else {
+        this.popService.addToast({ type: 'erroe', msg: '文章撤回失败' })
+        this.search(this.pageNum, '1')
+      }
+    })
+  }
+  reset() {
+    this.searchItems = new Items()
+    this.searchItems.status = ''
+	}
+  changePage(e) {
+    this.pageNum = e
+		this.search(e, '1')
+  }
+}
+class Items {
+	constructor(
+    public starttime?: NgbDateStruct, 
+    public endtime?: NgbDateStruct, 
+    public status?: any,
+    public title?: String
+  ) {}
+}

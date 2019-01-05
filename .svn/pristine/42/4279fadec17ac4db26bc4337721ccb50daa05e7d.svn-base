@@ -1,0 +1,94 @@
+import { Component, OnInit } from '@angular/core'
+import { FormGroup, FormControl, Validators } from '@angular/forms'
+
+import { InterfaceService } from '../../../../shared/services/http/interfaces.service'
+import { PopService } from '../../../../shared/services/pop/pop.service'
+
+@Component({
+	selector: 'app-add',
+	templateUrl: './add.component.html',
+	styleUrls: [ './add.component.scss' ]
+})
+export class AddComponent implements OnInit {
+	detailForm: FormGroup
+	submitted: boolean
+
+	public department
+	public items
+	toast = {
+		position: 'center-center'
+	}
+
+	constructor(private interfaceService: InterfaceService,private popService:PopService) {
+		this.items = new Items()
+
+		const account = new FormControl()
+		const name = new FormControl()
+		const mobile = new FormControl('', Validators.pattern(/^((1[3,5,8][0-9])|(14[5,7])|(17[0,6,7,8]))\d{8}$/))
+		const departmentId = new FormControl()
+		const jobName = new FormControl()
+		const occupationClass = new FormControl()
+		const status = new FormControl()
+		const sex = new FormControl('', Validators.nullValidator)
+		const remark = new FormControl('', Validators.nullValidator)
+
+		this.detailForm = new FormGroup({
+			account: account,
+			name: name,
+			mobile: mobile,
+			departmentId: departmentId,
+			jobName: jobName,
+			occupationClass: occupationClass,
+			status: status,
+			sex: sex,
+			remark: remark
+		})
+	}
+
+	ngOnInit() {
+		this.items.status = '1'
+		this.items.sex = '1'
+		this.items.occupationClass = '员工'
+		this.items.departmentId = ''
+		this.getDepartment()
+	}
+
+	onSubmit() {
+		this.submitted = true
+		for (var i = 0; i < this.department.length; i++) {
+			if (this.items.departmentId == this.department[i].id) {
+				this.items.departmentName = this.department[i].fullName
+			}
+		}
+	    this.interfaceService.saveUser(null,this.items).then(result => {
+			if(result) {
+				this.popService.addToast({type:'success',msg:'成功'})
+			}
+		})
+		
+	}
+
+	getDepartment() {
+		this.interfaceService.getHierarchicalDepartments().then(result => {
+			this.department = result
+		})
+	}
+
+	goBack() {
+		history.go(-1)
+	}
+}
+class Items {
+	constructor(
+		public account?: String,
+		public name?: String,
+		public mobile?: String,
+		public departmentId?: String,
+		public departmentName?: String,
+		public jobName?: String,
+		public occupationClass?: String,
+		public status?: any,
+		public sex?: any,
+		public remark?: String
+	) {}
+}

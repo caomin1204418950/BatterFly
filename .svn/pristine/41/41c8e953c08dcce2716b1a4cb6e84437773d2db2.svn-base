@@ -1,0 +1,49 @@
+.header-right {
+    position: absolute;
+    right: 30px;
+    top: 17px;
+}.input-box .date-box .input-date {
+    width: 43%;
+    float: left;
+}
+.input-box .date-box {
+    overflow: hidden;
+}
+.select-box .input-box .date-box span {
+    width: 14%;
+    text-align: center;
+    float: left;
+}
+.form-group-btn {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: end;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+    padding: 1rem;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    border-top: 1px solid #e9ecef;
+  }
+  .form-group-btn .btn {
+    margin-left: 10px;
+  }
+  .mar-b-1 {
+      margin-bottom: 1rem;
+  }
+  .modal-style {
+    height: 500px;
+    overflow: auto
+  }
+  .date-mark{
+    position: fixed;
+    top:0;
+    left:0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+  }

@@ -1,0 +1,108 @@
+<div>
+
+  <app-card [title]="'发布文章'">
+    <div class="publish-save">
+      <form [formGroup]="form" accept-charset="utf-8">
+        <div class="form">
+          <div class="form-item">
+            <label>文章标题</label>
+            <div class="item-content"><input type="text" maxlength="200" [(ngModel)]="items.title" formControlName="title"
+                required placeholder="文章标题"></div>
+          </div>
+          <div class="message text-danger" *ngIf="(!form.controls.title.valid)&&(form.controls.title.dirty||form.controls.title.touched)">文章标题不能为空</div>
+          <div class="form-item">
+            <label>文章来源</label>
+            <div class="item-content"><input type="text" [(ngModel)]="items.originResource" formControlName="originResource"
+                required placeholder="文章来源"></div>
+          </div>
+          <div class="message text-danger" *ngIf="(!form.controls.originResource.valid)&&(form.controls.originResource.dirty||form.controls.originResource.touched)">文章标题不能为空</div>
+          <div class="form-item">
+              <label>文章类型</label>
+              <div class="item-content">
+                <select [(ngModel)]="items.type" formControlName="type">
+                  <!-- <option value="1">1</option> -->
+                  <option value="{{item.id}}" *ngFor="let item of typeList">{{item.fullName}}</option>
+                </select>
+              </div>
+            </div>
+          <div class="form-item">
+            <label>阅读量</label>
+            <div class="item-content"><input type="text" maxlength="100" [(ngModel)]="items.read" required placeholder="阅读量"
+                formControlName="read"></div>
+          </div>
+          <div class="message text-danger" *ngIf="(form.controls.read.dirty || form.controls.read.touched)">
+            <span *ngIf="form.controls.read.errors?.required">阅读量不能为空</span>
+            <span *ngIf="form.controls.read.errors?.pattern">阅读量只能为数字</span>
+          </div>
+          <div class="form-item">
+            <label>收藏量</label>
+            <div class="item-content"><input type="text" maxlength="100" [(ngModel)]="items.favorite" required placeholder="收藏量"
+                formControlName="favorite"></div>
+          </div>
+          <div class="message text-danger" *ngIf="(form.controls.favorite.dirty || form.controls.favorite.touched)">
+            <span *ngIf="form.controls.favorite.errors?.required">收藏量不能为空</span>
+            <span *ngIf="form.controls.favorite.errors?.pattern">收藏量只能为数字</span>
+          </div>
+          <div class="form-item">
+            <label>标签</label>
+            <div class="item-content">
+              <app-tag [tags]="items.tags"></app-tag>
+            </div>
+          </div>
+          <div class="form-item">
+            <label>封面图片</label>
+            <div class="item-content">
+              <span class="image-upload-tip">{{uploadMsg}}<i *ngIf="upload === 'uploading'" class="fa fa-spinner fa-spin"></i></span>
+              <a href="javascript:;" class="file">选择图片
+                <input type="file" (change)="previewImg($event)" accept="image/jpg,image/jpeg,image/png" capture="camera">
+              </a>
+            </div>
+          </div>
+          <div style="text-align: center;">
+            <img class="upload-image" [src]="defaultImgUrl" />
+          </div>
+          <div class="message text-danger" *ngIf="!form.controls.picture">图片必须上传</div>
+          <app-myeditor [elementId]="'tinymce-editor'" (onEditorKeyup)="getEditorContent($event)" [initialContent]="items.content"></app-myeditor>
+          <div class="buttons">
+            <button class="btn btn-primary ripple light" (click)="onSubmit(0)" [disabled]="!form.valid">保存修改</button>
+            <button class="btn btn-default ripple light" (click)="onSubmit(1)" [disabled]="!form.valid">立即发布</button>
+            <button class="btn btn-primary ripple light" (click)="getTime();modalDefault.show()" [disabled]="!form.valid">定时发布</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </app-card>
+  <app-modal-basic [hideFooter]="'false'" #modalDefault>
+    <div class="app-modal-header">
+      <h4 class="modal-title">定时发文</h4>
+      <button type="button" class="close basic-close" (click)="modalDefault.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="app-modal-body">
+      <!-- <form accept-charset ='UTF-8' (ngSubmit)="onSubmit()"> -->
+      <div class="form-group row">
+        <!-- <div class="content"> -->
+          <select class="form-control day" name="day" (change)="timeChange($event,'day')">
+            <option selected value="0">今天</option>
+            <option value="1">明天</option>
+            <option value="2">后天</option>
+          </select>
+          <select class="form-control hour" name="hours" (change)="timeChange($event,'hour')">
+            <option *ngFor="let item of time.hours" [value]="item" [selected]="item === time.selectedHour">{{item}}</option>
+          </select><span>时</span>
+          <select class="form-control minute" name="minutes" (change)="timeChange($event,'minute')">
+            <option *ngFor="let item of time.minutes" [value]="item" [selected]="item === time.selectedMinute">{{item}}</option>
+          </select><span>分</span>
+        <!-- </div> -->
+      </div>
+      <p>（只能选择5分钟-48小时范围内的时间）</p>
+      <!-- <p>本文将于{{time.timeString}}发布</p> -->
+      <div class="form-group form-group-btn row button">
+        <button type="button" class="btn btn-primary btn-outline-primary ripple light" (click)="modalDefault.hide()">取消</button>
+        <button type="submit" class="btn btn-primary ripple light" (click)="modalDefault.hide();onSubmit(2)">定时发布</button>
+      </div>
+      <!-- </form> -->
+    </div>
+  </app-modal-basic>
+</div>

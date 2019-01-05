@@ -1,0 +1,76 @@
+<div class="applyContainer">
+  <app-card>
+      <div class="col-sm-12 select-box">
+          <div class="row m-b-10">
+            <div class="col-12 col-md-3 input-box m-b-20">
+              <span>手机号码：</span>
+              <input type="text" placeholder="请输入手机号码"  maxlength="11">
+            </div>
+            <div class="col-12 col-md-3 input-box m-b-20">
+              <span>申请日期范围：</span>
+              <div class="date-box">
+                <input class="input-date" type="text" placeholder="开始时间" ngbDatepicker #startDate="ngbDatepicker" (click)="startDate.toggle()">
+                至
+                <input class="input-date" type="text" placeholder="结束时间" ngbDatepicker #endDate="ngbDatepicker" (click)="endDate.toggle()">
+              </div>
+            </div>
+            <div class="col-12 col-md-3 input-box m-b-20">
+                <span>审核状态：</span>
+                <select >
+                  <option value="">所有</option>
+                  <option value="待审核">待审核</option>
+                  <option value="不通过">不通过</option>
+                  <option value="通过">通过</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-3 input-box m-b-20">
+                <span>审核方式：</span>
+                <select >
+                  <option value="">所有</option>
+                  <option value="自动审核">自动审核</option>
+                  <option value="人工审核">人工审核</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-3 input-box float-right search-btn">
+              <span>&nbsp;</span>
+              <button class="btn btn-primary ripple light">
+                <i class="icofont icofont-search-alt-2"></i>查询</button>
+              <button class="btn btn-primary btn-outline-primary ripple light" (click)="reset()">
+                <i class="icofont icofont-close"></i>重置</button>
+            </div>
+          </div>
+      </div>
+  </app-card>
+  <app-card>
+      <div class="listHeader">
+          <div class="headerLeft">申请记录</div>
+          <div class="headerRight">
+              <button class="btn btn-primary ripple light" >通过</button>
+              <button class="btn btn-primary ripple light" >拒绝</button>
+          </div>
+      </div>
+      <ngx-datatable class="data-table"
+          [rows]="rows"
+          [selected]="selected"
+          selectionType = "checkbox"
+          [columnMode]="'force'"
+          [headerHeight]="54"
+          [rowHeight]="'auto'"
+          
+          (select)='onSelect($event)'>
+              <ngx-datatable-column headerClass = "table-header-checkbox" maxWidth = 80 [sortable]="false" checkboxable = true headerCheckboxable=true >
+              </ngx-datatable-column>
+              <ngx-datatable-column [sortable]="false" name="手机号码" prop="telNum"></ngx-datatable-column>
+              <ngx-datatable-column [sortable]="false" name="审核状态" prop="checkStatus"></ngx-datatable-column>
+              <ngx-datatable-column [sortable]="false" name="审核方式" prop="checkWay"></ngx-datatable-column>
+              <ngx-datatable-column [sortable]="false" name="申请日期" prop="applyDate"></ngx-datatable-column>
+              <ngx-datatable-column [sortable]="false" name="审核时间" prop="checkDate"></ngx-datatable-column>
+              <ngx-datatable-column [sortable]="false" name="操作" prop="">
+                  <ng-template  ngx-datatable-cell-template let-row="row">
+                          <button class="btn" >详情</button>                            
+                          <button *ngIf="row.checkStatus=='待审核'" class="btn" >审核</button>                            
+                  </ng-template>
+                  </ngx-datatable-column>
+      </ngx-datatable>
+  </app-card>
+</div>

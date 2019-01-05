@@ -1,0 +1,60 @@
+.tags {
+  .my-tag {
+    background-color: rgba(64, 158, 255, .1);
+    display: inline-block;
+    padding: 0 10px;
+    height: 32px;
+    line-height: 30px;
+    font-size: 12px;
+    color: #409eff;
+    border-radius: 4px;
+    box-sizing: border-box;
+    border: 1px solid rgba(64, 158, 255, .2);
+    white-space: nowrap;
+    transition: .2s;
+    margin-right: 10px;
+  }
+
+  .icon-close {
+    text-align: center;
+    border-radius: 50%;
+    color: #409eff;
+    font-size: 12px;
+    padding: 2px;
+    margin-left: 6px;
+    margin-top: 6px;
+
+    &:hover {
+      background-color: #409eff;
+      color: #fff;
+    }
+  }
+
+  .button-new-tag {
+    height: 32px;
+    line-height: 30px;
+    font-size: 12px;
+    border-radius: 3px;
+    background-color: #fff;
+    border: 1px solid #dcdfe6;
+    color: #606266;
+    transition: .1s;
+    padding: 0 10px;
+
+    &:hover {
+      background-color: rgba(64, 158, 255, .1);
+      color: #409eff;
+    }
+  }
+
+  input {
+    width: 100px;
+    border-radius: 3px;
+    border: 1px solid #409EFF;
+    padding: 4px 5px;
+    font-size: 12px;
+    // &:focus {
+    //   border: 1px solid #409EFF;
+    // }
+  }
+}

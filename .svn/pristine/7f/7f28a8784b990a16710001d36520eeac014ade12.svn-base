@@ -1,0 +1,178 @@
+import { Component, OnInit, ViewChild, Input } from '@angular/core'
+import { FormGroup, FormControl, Validators } from '@angular/forms'
+import { InterfaceService } from '../../../shared/services/http/interfaces.service'
+import { PopService } from '../../../shared/services/pop/pop.service'
+
+@Component({
+	selector: 'app-department',
+	templateUrl: './department.component.html',
+	styleUrls: [
+		'../../../../assets/icon/menu/iconfont.css',
+		'../../../../assets/icon/operate/iconfont.css',
+		'./department.component.scss'
+	]
+})
+export class DepartmentComponent implements OnInit {
+	rows = []
+	toast = {
+		position: 'center-center'
+	}
+
+	public total
+
+	public items
+	public modalTitle: String
+	public modalStatus
+	public department
+	public departmentEdit
+	public dbDepartment
+
+	addForm: FormGroup
+	submitted: boolean
+	public mask: boolean
+
+	constructor(
+		private interfaceService: InterfaceService,
+		private popService: PopService
+	) {
+		this.items = new Items()
+
+		const parentId = new FormControl()
+		const fullName = new FormControl()
+		const shortName = new FormControl()
+		const sort = new FormControl('', Validators.pattern(/^[1-9]\d{0,1}$/))
+		const remark = new FormControl()
+		const status = new FormControl()
+		const code = new FormControl()
+
+		this.addForm = new FormGroup({
+			parentId: parentId,
+			fullName: fullName,
+			shortName: shortName,
+			sort: sort,
+			remark: remark,
+			status: status,
+			code: code
+		})
+	}
+
+	ngOnInit() {
+		this.items.parentId = ''
+		this.mask = true
+		this.load()
+	}
+
+	load() {
+		this.interfaceService.getDepartmentList().then((res) => {
+			if (!res) return
+			this.rows = res
+			this.total = res.length
+		})
+	}
+
+	getDepartment() {
+		this.interfaceService.getHierarchicalDepartments().then((res) => {
+			this.department = res
+		})
+	}
+
+	getDepartmentEdit(id) {
+		this.interfaceService.getDepartment(id).then((result) => {
+			this.departmentEdit = result
+		})
+	}
+
+	changeTitle(title, status) {
+		this.modalTitle = title
+		this.modalStatus = status
+	}
+
+	setValue(value) {
+		this.items.id = value.id
+		this.items.parentId = value.parentId
+		this.items.fullName = value.fullName
+		this.items.shortName = value.shortName
+		this.items.sort = value.sort
+		this.items.remark = value.remark
+		this.items.status = value.status
+		this.items.code = value.code
+	}
+
+	add(row) {
+		this.items.status = 1
+		if (row) {
+			if (row.status == 0) {
+        this.mask = false
+        this.popService.addToast({type:'warning',msg:'该部门已被禁用，此操作不可用'})
+			} else {
+				this.mask = true
+				this.items.parentId = row.id
+				this.items.parentName = row.fullName
+				this.items.level = row.level
+			}
+		} else {
+			this.items.parentId = ''
+		}
+	}
+
+	modify(row) {
+		if (row.parentId == null) {
+			row.parentId = ''
+		}
+		this.mask = true
+		this.setValue(row)
+	}
+
+	switchange(row) {
+		var status = null
+		if (row.status == 0) {
+			status = 1
+		} else if (row.status == 1) {
+			status = 0
+		}
+		this.interfaceService.updateDepartment({ id: row.id, status: status }).then((result) => {
+			if (result) {
+				this.popService.addToast({ type: 'success', msg: '状态修改成功' })
+			}
+			this.rows = []
+			this.load()
+		})
+	}
+
+	onSubmit() {
+		this.submitted = true
+		if (this.modalStatus == 'edit') {
+			this.dbDepartment = this.departmentEdit
+		} else {
+			this.dbDepartment = this.department
+		}
+		for (let i = 0; i < this.dbDepartment.length; i++) {
+			if (this.dbDepartment[i].id == this.items.parentId) {
+				this.items.code = this.dbDepartment[i].code
+			}
+		}
+		this.interfaceService.saveDepartment(this.items, this.modalStatus, this.items.id).then(result => {
+      if(result) {
+        this.popService.addToast({type:'success',msg:'成功'})
+      }
+      this.rows = []
+      this.load()
+      this.addForm.reset()
+    })
+	}
+}
+
+class Items {
+	constructor(
+		public id?: String,
+		public parentId?: String,
+		public parentName?: String,
+		public fullName?: String,
+		public shortName?: String,
+		public sort?: Number,
+		public remark?: String,
+		public status?: any,
+		public code?: String,
+		public level?: String
+	) {}
+}

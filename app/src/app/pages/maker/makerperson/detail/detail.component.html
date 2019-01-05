@@ -1,0 +1,106 @@
+<div class="detailContainer">
+  <app-card>
+    <div class="rowContainer">
+      <div class="row">
+        <div class="clomnOne">手机号码</div>
+        <div class="clomnTwo">{{telNum}}</div>
+        <div class="clomnOne">用户头像</div>
+        <div class="clomnLast">{{avatar}}</div>
+      </div>
+      <div class="rowmid">
+        <div class="clomnOne">邀请人</div>
+        <div class="clomnTwo">{{inviter}}</div>
+        <div class="clomnOne">注册来源</div>
+        <div class="clomnLast">{{registrationSource}}</div>
+      </div>
+      <div class="row">
+        <div class="clomnOne">状态</div>
+        <div class="clomnTwo">{{status}}</div>
+        <div class="clomnOne">分组</div>
+        <div class="clomnLast">{{group}}</div>
+      </div>
+    </div>
+  </app-card>
+
+  <app-card>
+    <div class="detail">
+      <div class="headBtn">
+        <button class="btn" style="font-size:14px;" (click)="showBasic()">基本信息</button>
+        <button class="btn" style="font-size:14px;margin-left:3px;" (click)="showCheck()">认证信息</button>
+        <button class="btn" style="font-size:14px;margin-left:3px;" (click)="showLogin()">登陆信息</button>
+      </div>
+      <div class="basicInm" *ngIf="showBasicInm">
+        <div class="rowContainer">
+          <div class="row">
+            <div class="clomnOne">最高学历</div>
+            <div class="clomnTwo">{{education}}</div>
+            <div class="clomnOne">工作年限</div>
+            <div class="clomnLast">{{workTime}}年</div>
+          </div>
+          <div class="rowmid">
+            <div class="clomnOne">当前所在行业</div>
+            <div class="clomnTwo">{{job}}</div>
+            <div class="clomnOne">现居城市</div>
+            <div class="clomnLast">{{city}}</div>
+          </div>
+          <div class="row">
+            <div class="clomnOne">所在岗位</div>
+            <div class="clomnTwo">{{position}}</div>
+            <div class="clomnOne"></div>
+            <div class="clomnLast">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="checkInm" *ngIf="showCheckInm">
+        <div class="title">
+          <h4>实名认证 <img src="" alt=""></h4>
+        </div>
+        <div class="idImg">
+          <div class="idImgA">身份证人像面</div>
+          <div class="idImgB">身份证国徽面</div>
+        </div>
+        <div class="rowContainer">
+            <div class="row">
+              <div class="clomnOne">姓名</div>
+              <div class="clomnTwo">张三</div>
+              <div class="clomnOne">性别</div>
+              <div class="clomnLast">男</div>
+            </div>
+            <div class="rowmid">
+              <div class="clomnOne">民族</div>
+              <div class="clomnTwo">汉</div>
+              <div class="clomnOne">出生年月</div>
+              <div class="clomnLast">1997-01-23</div>
+            </div>
+            <div class="rowthrd">
+              <div class="clomnOne">身份证号码</div>
+              <div class="clomnTwo">366488199701230001</div>
+              <div class="clomnOne">住址</div>
+              <div class="clomnLast">南昌市青山湖xxxxx区xxxx村xx号</div>
+            </div>
+            <div class="row">
+              <div class="clomnOne">发证机关</div>
+              <div class="clomnTwo">江西省南昌市公安机关</div>
+              <div class="clomnOne">有效期</div>
+              <div class="clomnLast">2008.11.11-2030.03.22</div>
+            </div>
+          </div>
+      </div>
+
+      <div class="loginInm" *ngIf="showLoginInm">
+          <app-card>
+              <ngx-datatable class="data-table dt-chk" [rows]="rows" [columnMode]="'force'" [scrollbarH]="true" [headerHeight]="50" [rowHeight]="'auto'"
+              [limit]="10">
+              <ngx-datatable-column [sortable]="false"maxWidth = 70 name="序号" ></ngx-datatable-column>
+              <ngx-datatable-column [sortable]="false" name="登录时间" ></ngx-datatable-column>
+              <ngx-datatable-column [sortable]="false" name="登陆地点" ></ngx-datatable-column>
+              <ngx-datatable-column [sortable]="false" name="登陆终端" ></ngx-datatable-column>
+            </ngx-datatable>
+          </app-card>
+      </div>
+    </div>
+  </app-card>
+
+  
+</div>

@@ -1,0 +1,88 @@
+import { Component, OnInit } from '@angular/core'
+import { NgbCalendar, NgbDateParserFormatter, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap'
+
+import { InterfaceService } from '../../shared/services/http/interfaces.service'
+import { PopService } from '../../shared/services/pop/pop.service'
+
+@Component({
+	selector: 'app-log',
+	templateUrl: './log.component.html',
+	styleUrls: [ './log.component.scss' ]
+})
+export class LogComponent implements OnInit {
+	public rows = []
+	public total
+	public totalPage
+	public pageNum
+
+	public searchItems
+	public items
+	public flag = true
+
+	toast = {
+		position: 'center-center',
+		title: '提示',
+		msg: '',
+		showClose: true,
+		theme: 'material',
+		type: 'success',
+		closeOther: false
+	}
+
+	constructor(
+		public parserFormatter: NgbDateParserFormatter,
+		public calendar: NgbCalendar,
+		private interfaceService: InterfaceService,
+		private popService: PopService
+	) {
+		this.searchItems = new Items()
+		this.items = new Items()
+	}
+
+	ngOnInit() {
+		this.search(1, '')
+	}
+
+	dataJud() {
+		if (this.searchItems.startDate && this.searchItems.endDate) {
+			if (
+				this.searchItems.startDate.year > this.searchItems.endDate.year ||
+				this.searchItems.startDate.month > this.searchItems.endDate.month ||
+				this.searchItems.startDate.day > this.searchItems.endDate.day
+			) {
+        this.popService.addToast({msg:'开始时间不能大于结束时间！',type:'error'})
+				this.flag = false
+			} else {
+				this.flag = true
+			}
+		}
+	}
+	search(e, type) {
+		if (!type) {
+			this.searchItems = new Items()
+		}
+		this.dataJud()
+		if (this.flag) {
+			this.items.startDate = this.parserFormatter.format(this.searchItems.startDate)
+			this.items.endDate = this.parserFormatter.format(this.searchItems.endDate)
+			this.items.title = this.searchItems.title
+			let searchItems = Object.assign(this.items, { pageSize: 10 ,pageNum: e })
+			this.interfaceService.getLogList(searchItems).then((result) => {
+				this.rows = result.list
+				this.total = result.total
+				this.totalPage = result.pages
+				this.pageNum = result.pageNum
+			})
+		}
+	}
+	reset() {
+		this.searchItems = new Items()
+	}
+
+	changePage(e) {
+		this.search(e, '1')
+	}
+}
+class Items {
+	constructor(public startDate?: NgbDateStruct, public endDate?: NgbDateStruct, public title?: String) {}
+}

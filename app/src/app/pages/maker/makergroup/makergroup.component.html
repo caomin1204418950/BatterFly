@@ -1,0 +1,130 @@
+<div class="groupContainer">
+    <app-card> 
+        <div class="col-sm-12 select-box">
+            <div class="row m-b-10">
+              <div class="col-12 col-md-4 input-box m-b-20">
+                <span>分组名称：</span>
+                <input type="text" maxlength="20" placeholder="请输入分组名称关键字">
+              </div>
+              <div class="col-12 col-md-3 input-box m-b-20">
+                <span>状态：</span>
+                <select >
+                  <option value="">所有状态</option>
+                  <option value="0">禁用</option>
+                  <option value="1">启用</option>
+                </select>
+              </div>
+              <div class="col-12 col-md-4 input-box float-right search-btn">
+                <span>&nbsp;</span>
+                <button class="btn btn-primary ripple light" ><i class="icofont icofont-search-alt-2"></i>查询</button>
+                <button class="btn btn-primary btn-outline-primary ripple light" ><i class="icofont icofont-close"></i>重置</button>
+              </div>
+            </div>
+          </div>
+    </app-card>
+    <app-card>
+        <div class="listHeader">
+            <div class="headerLeft">分组列表</div>
+            <div class="headerRight">
+                <button class="btn btn-primary ripple light" (click)="manyDisable()" >禁用</button>
+                <button class="btn btn-primary ripple light" (click)="modalManyable.show();manyAble()">启用</button>
+                <button class="btn btn-primary ripple light" (click)="modalAdd.show()">添加分组</button>
+            </div>
+        </div>
+        <ngx-datatable class="data-table"
+            [rows]="rows"
+            [selected]="selected"
+            selectionType = "checkbox"
+            [columnMode]="'force'"
+            [headerHeight]="54"
+            [rowHeight]="'auto'"
+            
+            (select)='onSelect($event)'>
+                <ngx-datatable-column headerClass = "table-header-checkbox" maxWidth = 50 [sortable]="false" checkboxable = true headerCheckboxable=true >
+                </ngx-datatable-column>
+                <ngx-datatable-column [sortable]="false" name="分组名称" prop="name">
+                </ngx-datatable-column>
+                <ngx-datatable-column [sortable]="false" name="佣金比例" prop="percent"></ngx-datatable-column>
+                <ngx-datatable-column [sortable]="false" name="状态" prop="status">
+                        <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-value="value">
+                                <div>
+                                  <ui-switch class="js-single" color="#ecedf2" switchColor="#716aca" switchOffColor="#e0e2e9" size="medium" (click)="modalStatusCheck.show(row.index);switchange(row)" [checked]="value=='1'" ></ui-switch>
+                                </div>
+                        </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column [sortable]="false" name="更新时间" prop="updateDate"></ngx-datatable-column>
+                <ngx-datatable-column [sortable]="false" name="操作" prop="">
+                    <ng-template  ngx-datatable-cell-template let-row="row">
+                            <button class="btn" (click)="modalDefault.show()" >修改</button>                            
+                    </ng-template>
+                    </ngx-datatable-column>
+        </ngx-datatable>
+    </app-card>
+    <app-modal-basic [hideFooter]="'false'" #modalAdd>
+            <div class="app-modal-header">
+                    <h4 class="modal-title">添加分组</h4>
+                    <button type="button" class="close basic-close" (click)="modalAdd.hide()">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+            <div class="app-modal-body">
+                <form>
+                    <div class="groupRow">
+                            <label class="col-sm-3 col-form-label">分组名称：</label>
+                            <input type="text" maxlength="50" name="groupValue" class="form-control "  >
+                    </div>
+                    <div class="groupRow">
+                            <label class="col-sm-3 col-form-label">佣金系数：</label>
+                            <input type="number" maxlength="50" name="percentValue" class="form-control" >
+                    </div>
+                    <div class="groupRow">
+                            <label  class="col-sm-3 col-form-label">分组描述：</label>
+                            <textarea cols="30" rows="5"class="form-control" maxlength="250" name="decrateValue"></textarea>
+                    </div>
+                    <div class="groupBtn">
+                        <button type="button" class="btn btn-primary btn-outline-primary ripple light"(click)="modalAdd.hide()" >取消</button>
+                        <button type="submit" class="btn btn-primary  ripple light" (click)="modalAdd.hide();addGroup()">确定</button>
+                    </div>
+                </form>
+            </div>
+    </app-modal-basic>
+    <app-modal-basic [hideFooter]="'false'" #modalDefault>
+            <div class="app-modal-header">
+                    <h4 class="modal-title">修改分组</h4>
+                    <button type="button" class="close basic-close" (click)="modalDefault.hide()">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+            <div class="app-modal-body">
+                <form>
+                    <div class="groupRow">
+                            <label class="col-sm-3 col-form-label" >分组名称：</label>
+                            <input type="text" maxlength="50" class="form-control " >
+                    </div>
+                    <div class="groupRow">
+                            <label class="col-sm-3 col-form-label">佣金系数：</label>
+                            <input type="number" maxlength="50" class="form-control" >
+                    </div>
+                    <div class="groupRow">
+                            <label class="col-sm-3 col-form-label">分组描述：</label>
+                            <textarea cols="30" rows="5"class="form-control" maxlength="250"></textarea>
+                    </div>
+                    <div class="groupBtn">
+                        <button type="button" class="btn btn-primary btn-outline-primary ripple light"(click)="modalDefault.hide()" >取消</button>
+                        <button type="submit" class="btn btn-primary  ripple light" (click)="modalDefault.hide()">修改</button>
+                    </div>
+                </form>
+            </div>
+    </app-modal-basic>
+    <app-modal-basic [hideFooter]="'false'"   [width]='"250px"' #modalStatusCheck>
+                <div class="app-modal-header">
+                        <span>你确定修改状态吗？</span>
+                </div>
+                <div class="app-modal-body">
+                        <button type="button" class="btn btn-primary btn-outline-primary ripple light" (click)="modalStatusCheck.hide()">取消</button>
+                        <button type="submit" class="btn btn-primary  ripple light" (click)="modalStatusCheck.hide();statusConfirm()">确定</button>                        
+                </div>
+    </app-modal-basic>
+    <!-- <app-modal-basic ></app-modal-basic> -->
+    <!-- <app-modal-basic #modalManyAble></app-modal-basic> -->
+</div>

@@ -1,0 +1,36 @@
+import { Component, OnInit } from '@angular/core'
+import { InterfaceService } from '../../shared/services/http/interfaces.service'
+
+@Component({
+	selector: 'app-home',
+	templateUrl: './home.component.html',
+	styleUrls: [ './home.component.scss' ]
+})
+export class HomeComponent implements OnInit {
+	public currentNewUserCount: String
+	public currentUserCount: String
+	public totalPushCount: String
+	public totalReadCount: String
+	constructor(
+		private interfaceService: InterfaceService,
+	) {}
+
+	ngOnInit() {
+		this.getHomeDataP()
+	}
+	getHomeDataP (){
+		this.interfaceService.getUserData().then((res) => {
+			console.log(111,res)
+			if(res){
+				this.currentNewUserCount = res.currentNewUserCount
+				this.currentUserCount = res.currentUserCount
+			}
+		})
+		this.interfaceService.getArticleData().then((res) => {
+			if(res){
+				this.totalPushCount = res.todayPushCount
+				this.totalReadCount = res.totalReadCount
+			}
+		})
+	}
+}

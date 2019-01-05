@@ -1,0 +1,16 @@
+.listHeader{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between
+}
+.groupRow{
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+}
+.groupBtn{
+    display: flex;
+    flex-direction: row;
+    justify-content:flex-end;
+    margin-top: 20px;
+}

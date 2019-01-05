@@ -1,0 +1,10 @@
+.date-box{
+    display: flex;
+    flex-direction: row;
+    align-items: center
+}
+.listHeader{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

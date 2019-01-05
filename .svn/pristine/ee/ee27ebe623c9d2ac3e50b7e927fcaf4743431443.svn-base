@@ -1,0 +1,96 @@
+<app-card class="authHide" [appResource]="{authName:'get/roles/grid'}">
+  <div class="col-sm-12 select-box">
+    <div class="row m-b-10">
+      <div class="col-12 col-md-3 input-box m-b-20">
+        <span>文章标题：</span>
+        <input type="text" [(ngModel)]="searchItems.title" maxlength="20" placeholder="请输入文章标题">
+      </div>
+      <div class="col-12 col-md-3 input-box m-b-20">
+        <span>发布时间：</span>  
+        <div class="date-box">
+          <input class="input-date" [(ngModel)]="searchItems.starttime" ngbDatepicker #startDate="ngbDatepicker" (click)="startDate.toggle();$event.stopPropagation();checkMark ()" placeholder="起始时间">
+          <span>至</span>
+          <input class="input-date" [(ngModel)]="searchItems.endtime" ngbDatepicker #endDate="ngbDatepicker" (click)="endDate.toggle()" placeholder="结束时间">
+        </div>
+      </div>
+      <div class="col-12 col-md-3 input-box m-b-20">
+        <span>状态：</span>
+        <select [(ngModel)]="searchItems.status">
+          <option value="">所有状态</option>
+          <option value="0">待发布</option>
+          <option value="1">已发布</option>
+          <option value="2">已定时待发布</option>
+          <option value="3">已撤回</option>
+        </select>
+      </div>
+      <div class="col-12 col-md-3 input-box float-right search-btn">
+        <span>&nbsp;</span>
+        <button class="btn btn-primary ripple light" (click)="search(1,'search')"><i class="icofont icofont-search-alt-2"></i>查询</button>
+        <button class="btn btn-primary btn-outline-primary ripple light" (click)="reset()"><i class="icofont icofont-close"></i>重置</button>
+      </div>
+    </div>
+  </div>
+</app-card>
+<app-card [title]="'文章列表'" [buttonContent]="'发布文章'">
+  <div class="header-right authHide" [appResource]="{authName:'post/role'}">
+    <button class="btn btn-primary ripple light" routerLink="edit"><i class="icofont icofont-ui-add"></i>发布文章</button>
+  </div>
+  <ngx-datatable class="data-table" [rows]="rows" [columnMode]="'force'" [headerHeight]="54" [rowHeight]="'auto'">
+    <ngx-datatable-column [sortable]="false" name="文章标题" prop="title">
+      <ng-template ngx-datatable-cell-template let-row="row">
+          <span class="btn authHide" [appResource]="{authName:'post/role/id/permission'}" style="color: #666674; background: none; padding: 0; margin: auto 10px;" (click)="articleShow.show();showArticle(row)">{{row.title}}</span>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column [sortable]="false" name="文章来源" prop="source"></ngx-datatable-column>
+    <ngx-datatable-column [sortable]="false" name="阅读量" prop="readNumber"></ngx-datatable-column>
+    <ngx-datatable-column [sortable]="false" name="收藏量" prop="collectNumber"></ngx-datatable-column>
+    <ngx-datatable-column [sortable]="false" name="状态" prop="status">
+      <ng-template ngx-datatable-cell-template let-row="row">
+        <span *ngIf="row.status == 0" style="color: #666674; background: none; padding: 0; margin: auto 10px;">待发布</span>
+        <span *ngIf="row.status == 1" style="color: #666674; background: none; padding: 0; margin: auto 10px;">已发布</span>
+        <span *ngIf="row.status == 2" style="color: #666674; background: none; padding: 0; margin: auto 10px;">已定时待发布</span>
+        <span *ngIf="row.status == 3" style="color: #666674; background: none; padding: 0; margin: auto 10px;">已撤回</span>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column [sortable]="false" name="更新时间" prop="updateDate"></ngx-datatable-column>
+    <ngx-datatable-column [sortable]="false" name="操作" [width]="300" prop="">
+      <ng-template ngx-datatable-cell-template let-row="row">
+        <button *ngIf="row.status == 1" class="btn authHide" [appResource]="{authName:'post/role/id/permission'}" style="color: #666674; background: none; padding: 0; margin: auto 10px;" (click)="withdrawArticle.show();getArticleIdF(row)">撤回</button>
+        <button *ngIf="row.status == 0 || row.status == 3" class="btn authHide" [appResource]="{authName:'post/role/id/permission'}" style="color: #666674; background: none; padding: 0; margin: auto 10px;"[routerLink]="['edit']" [queryParams]="{id: row.articleId}">发布</button>
+        <button *ngIf="row.status == 2" class="btn authHide" [appResource]="{authName:'post/role/id/permission'}" style="color: #666674; background: none; padding: 0; margin: auto 10px;" (click)="cancelTime(row)">取消定时[{{row.quartzTime}}]</button>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+  <app-page-nav (getCurrentPage)="changePage($event)" [totalPage]='totalPage' [pageNum]='pageNum' [total]='total'></app-page-nav>
+</app-card>
+<app-modal-basic [hideFooter]=true #articleShow>
+  <div class="app-modal-header">
+    <h4 class="modal-title">文章原文内容</h4>
+    <button type="button" class="close basic-close" (click)="articleShow.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="app-modal-body">
+    <div class="mar-b-1 modal-style">
+      <div [innerHTML]="articleContent"></div>
+    </div>
+  </div>
+</app-modal-basic>
+<app-modal-basic [hideFooter]="'false'" #withdrawArticle>
+    <div class="app-modal-header">
+      <h4 class="modal-title">文章原文内容</h4>
+      <button type="button" class="close basic-close" (click)="withdrawArticle.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="app-modal-body">
+      <div class="mar-b-1">
+        您正在撤回已发布的文章，撤回用户将无法查看是否继续撤回？
+      </div>
+      <div class="form-group form-group-btn row">
+        <button type="button" class="btn btn-primary btn-outline-primary ripple light" (click)="withdrawArticle.hide()">取消撤回</button>
+        <button type="submit" class="btn btn-primary ripple light" (click) = "withdrawArticle.hide();withdrawArticleB()">确定撤回</button>
+      </div>
+    </div>
+  </app-modal-basic>
+<div class="date-mark"  (click)="startDate.close();endDate.close();checkMark ()" *ngIf="showMark"></div>

@@ -1,0 +1,68 @@
+<div class="partnerContainer">
+  <app-card>
+    <div class="col-sm-12 select-box">
+      <div class="row m-b-10">
+        <div class="col-12 col-md-3 input-box m-b-20">
+          <span>手机号码：</span>
+          <input type="text" placeholder="请输入手机号码" maxlength="11">
+        </div>
+        <div class="col-12 col-md-3 input-box m-b-20">
+          <span>注册日期范围：</span>
+          <div class="date-box">
+            <input class="input-date" type="text" placeholder="开始时间" ngbDatepicker #startDate="ngbDatepicker" (click)="startDate.toggle()"> 至
+            <input class="input-date" type="text" placeholder="结束时间" ngbDatepicker #endDate="ngbDatepicker" (click)="endDate.toggle()">
+          </div>
+        </div>
+        <div class="col-12 col-md-3 input-box m-b-20">
+          <span>注册来源：</span>
+          <select>
+            <option value="">所有来源</option>
+            <option value="APP">APP</option>
+            <option value="网页">网页</option>
+          </select>
+        </div>
+
+        <div class="col-12 col-md-3 input-box m-b-20">
+          <span>分组：</span>
+          <select>
+            <option value="0">所有状态</option>
+            <option value="">默认分组</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-3 input-box float-right search-btn groupBtn">
+          <button class="btn btn-primary ripple light">
+            <i class="icofont icofont-search-alt-2"></i>查询</button>
+          <button class="btn group_btn btn-primary btn-outline-primary ripple light" (click)="reset()">
+            <i class="icofont icofont-close"></i>重置</button>
+        </div>
+      </div>
+    </div>
+  </app-card>
+  <app-card>
+    <div class="head">
+      <div class="headLeft">
+        <h6>
+          <span style="color:red;">{{inviterNum}}</span> 邀请的创客伙伴列表</h6>
+      </div>
+      <div class="headRight">
+        <span>普通创客：220人，</span>
+        <span>合伙人：23人</span>
+      </div>
+    </div>
+
+    <ngx-datatable class="data-table dt-chk" [rows]="partner" [columnMode]="'force'"  [headerHeight]="50" [rowHeight]="'auto'"
+      [limit]="10">
+      <ngx-datatable-column [sortable]="false"  name="序号" prop="num"></ngx-datatable-column>
+      <ngx-datatable-column [sortable]="false" name="手机号码" prop="telNum"></ngx-datatable-column>
+      <ngx-datatable-column [sortable]="false" name="头像" prop="avatar"></ngx-datatable-column>
+      <ngx-datatable-column [sortable]="false" name="注册来源" prop="registrationSource"></ngx-datatable-column>
+      <ngx-datatable-column [sortable]="false" name="分组" prop="group"></ngx-datatable-column>
+      <ngx-datatable-column [sortable]="false" name="注册时间" prop="registrationDate"></ngx-datatable-column>
+      <ngx-datatable-column [sortable]="false" name="操作">
+          <ng-template ngx-datatable-cell-template let-row="row">
+              <button class="btn" (click)="toDetail()" style="font-size:14px">详情</button>                           
+      </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </app-card>
+</div>

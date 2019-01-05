@@ -1,0 +1,8 @@
+<div class="over-auto">
+  <div class="statistic">
+    <p><span>{{currentNewUserCount}}</span><br/>今日新增用户数</p>
+    <p><span>{{currentUserCount}}</span><br/>当前用户总数量</p>
+    <p><span>{{totalPushCount}}</span><br/>累计发布文章</p>
+    <p><span>{{totalReadCount}}</span><br/>累计阅读数量</p>
+  </div>
+</div>

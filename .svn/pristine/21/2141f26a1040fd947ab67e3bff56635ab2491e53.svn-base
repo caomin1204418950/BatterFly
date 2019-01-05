@@ -1,0 +1,2 @@
+<i *ngFor="let i of arr" class="space">&nbsp;&nbsp;</i>
+<i *ngFor="let i of arr" class="space">-</i>

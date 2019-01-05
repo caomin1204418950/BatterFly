@@ -1,0 +1,17 @@
+.select-box .input-box .calendar_box input {
+  // width: calc(50% - 16px);
+  display: inline;
+}
+.input-box .date-box .input-date {
+  width: 43%;
+  float: left;
+}
+.input-box .date-box {
+  overflow: hidden;
+}
+.select-box .input-box .date-box .lj {
+  width: 14%;
+  text-align: center;
+  float: left;
+}
+

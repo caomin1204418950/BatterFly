@@ -1,0 +1,33 @@
+<div class="applyContainer">
+    <app-card>
+        <div class="listHeader">
+            <div class="headerLeft">等级列表</div>
+            <div class="headerRight">
+                <button class="btn btn-primary ripple light" >新增等级</button>
+                <button class="btn btn-primary ripple light" >更新等级设置</button>
+            </div>
+        </div>
+        <ngx-datatable class="data-table"
+            [rows]="rows"
+            [selected]="selected"
+            selectionType = "checkbox"
+            [columnMode]="'force'"
+            [headerHeight]="54"
+            [rowHeight]="'auto'"
+            
+            (select)='onSelect($event)'>
+                <ngx-datatable-column [sortable]="false" name="序号"></ngx-datatable-column>
+                <ngx-datatable-column [sortable]="false" name="等级名称"></ngx-datatable-column>
+                <ngx-datatable-column [sortable]="false" name="返利奖金"></ngx-datatable-column>
+                <ngx-datatable-column [sortable]="false" name="下一级序号"></ngx-datatable-column>
+                <ngx-datatable-column [sortable]="false" name="贡献值要求"></ngx-datatable-column>
+                <ngx-datatable-column [sortable]="false" name="默认等级"></ngx-datatable-column>
+                <ngx-datatable-column [sortable]="false" name="操作">
+                    <ng-template  ngx-datatable-cell-template let-row="row">
+                            <button class="btn " >编辑</button>                            
+                            <button class="btn " >删除</button>                            
+                    </ng-template>
+                    </ngx-datatable-column>
+        </ngx-datatable>
+    </app-card>
+  </div>

@@ -1,0 +1,105 @@
+<div class="personContainer">
+  <app-card>
+      <div class="col-sm-12 select-box">
+          <div class="row m-b-10">
+            <div class="col-12 col-md-3 input-box m-b-20">
+              <span>手机号码：</span>
+              <input type="text" placeholder="请输入手机号码"  maxlength="11">
+            </div>
+            <div class="col-12 col-md-3 input-box m-b-20">
+              <span>注册日期范围：</span>
+              <div class="date-box">
+                <input class="input-date" type="text" placeholder="开始时间" ngbDatepicker #startDate="ngbDatepicker" (click)="startDate.toggle()">
+                至
+                <input class="input-date" type="text" placeholder="结束时间" ngbDatepicker #endDate="ngbDatepicker" (click)="endDate.toggle()">
+              </div>
+            </div>
+            <div class="col-12 col-md-3 input-box m-b-20">
+                <span>注册来源：</span>
+                <select >
+                  <option value="">所有来源</option>
+                  <option value="APP">APP</option>
+                  <option value="网页">网页</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-3 input-box m-b-20">
+                  <span>邀请人手机号码：</span>
+                  <input type="text" placeholder="请输入手机号码"  maxlength="11">
+            </div>
+            <div class="col-12 col-md-3 input-box m-b-20">
+                <span>账号状态：</span>
+                <select >
+                  <option value="">所有状态</option>
+                  <option value="0">禁用</option>
+                  <option value="1">启用</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-3 input-box m-b-20">
+                <span>分组：</span>
+                <select >
+                  <option value="0">所有状态</option>
+                  <option value="">默认分组</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-3 input-box float-right search-btn">
+              <span>&nbsp;</span>
+              <button class="btn btn-primary ripple light">
+                <i class="icofont icofont-search-alt-2"></i>查询</button>
+              <button class="btn btn-primary btn-outline-primary ripple light" (click)="reset()">
+                <i class="icofont icofont-close"></i>重置</button>
+            </div>
+          </div>
+      </div>
+  </app-card>
+  <app-card>
+      <div class="listHeader">
+          <div class="headerLeft">人员列表</div>
+          <div class="headerRight">
+              <button class="btn btn-primary ripple light" (click)="adjust()">调整人员分组</button>
+              <button class="btn btn-primary ripple light" (click)="disable()">禁用</button>
+              <button class="btn btn-primary ripple light" (click)="enable()">启用</button>
+          </div>
+      </div>
+      <ngx-datatable class="data-table"
+          [rows]="rows"
+          [selected]="selected"
+          selectionType = "checkbox"
+          [columnMode]="'force'"
+          [headerHeight]="54"
+          [rowHeight]="'auto'"
+          (select)='onSelect($event)'>
+              <ngx-datatable-column headerClass = "table-header-checkbox" maxWidth = 70 [sortable]="false"  checkboxable = true headerCheckboxable=true >
+              </ngx-datatable-column>
+              <ngx-datatable-column [sortable]="false" name="手机号码" prop="telNum"></ngx-datatable-column>
+              <ngx-datatable-column [sortable]="false" name="头像" prop="avatar"></ngx-datatable-column>
+              <ngx-datatable-column [sortable]="false" name="邀请人" prop="inviter"></ngx-datatable-column>
+              <ngx-datatable-column [sortable]="false" name="注册来源" prop="registrationSource"></ngx-datatable-column>
+              <ngx-datatable-column [sortable]="false" name="分组" prop="group"></ngx-datatable-column>
+              <ngx-datatable-column [sortable]="false" name="账号状态" prop="status">
+                  <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                      <div>
+                        <ui-switch class="js-single" color="#ecedf2" switchColor="#716aca" switchOffColor="#e0e2e9" size="medium"  (click)="modalDefault.show();switchChange(row)" [checked]="value=='1'"></ui-switch>
+                      </div>
+              </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column [sortable]="false" name="注册时间" prop="registrationDate"></ngx-datatable-column>
+              <ngx-datatable-column [sortable]="false" name="操作" prop="">
+                  <ng-template ngx-datatable-cell-template let-row="row" style="width:50%;">
+                          <button class="btn" [routerLink]="['detail']" [queryParams]="{rowId:row.rowId}" style="font-size:14px" (click)="toDetail(row.rowId)">详情</button>                            
+                          <button class="btn" style="font-size:14px" [routerLink]="['makerpartner']" [queryParams]="{rowId:row.rowId}" >创客伙伴</button>                            
+                  </ng-template>
+              </ngx-datatable-column>
+      </ngx-datatable>
+  </app-card> 
+  <app-modal-basic [hideFooter]="'false'" [width]='"250px"' #modalDefault>
+      <div class="app-modal-header">
+          <span>{{singleTip}}</span>          
+      </div>
+    <div class="app-modal-body">
+      <div class="groupBtn">
+          <button type="button" class="btn btn-primary group_btn btn-outline-primary ripple light"(click)="modalDefault.hide()" >取消</button>
+          <button type="submit" class="btn btn-primary group_btn  ripple light" (click)="modalDefault.hide()">确定</button>
+      </div>
+    </div>
+  </app-modal-basic>
+</div>

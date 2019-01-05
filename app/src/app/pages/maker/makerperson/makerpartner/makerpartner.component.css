@@ -1,0 +1,24 @@
+.date-box{
+    display: flex;
+    flex-direction: row;
+    align-items: center
+}
+.listHeader{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.groupBtn{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.group_btn{
+    margin: 0 15px;
+}
+.head{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}

@@ -1,0 +1,59 @@
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { AdminComponent } from './pages/admin/admin.component';
+
+const routes: Routes = [
+  {
+    path: '',
+    component: AdminComponent,
+    children: [
+      {
+        path: '',
+        redirectTo: 'home',
+        pathMatch: 'full'
+      },
+      {
+        path: 'home',
+        loadChildren: './pages/home/home.module#HomeModule'
+      },
+      // {
+      //   path: 'application',
+      //   loadChildren: './pages/application/application.module#ApplicationModule'
+      // },
+      // {
+      //   path: 'role',
+      //   loadChildren: './pages/role/role.module#RoleModule'
+      // },
+      // {
+      //   path: 'organization',
+      //   loadChildren: './pages/organization/organization.module#OrganizationModule'
+      // },
+      {
+        path: 'maker',
+        loadChildren: './pages/maker/maker.module#MakerModule'
+      },
+      {
+        path: 'partner',
+        loadChildren: './pages/partner/partner.module#PartnerModule'
+      }
+      // {
+      //   path: 'member',
+      //   loadChildren: './pages/member/member.module#MemberModule'
+      // },
+      // {
+      //   path: 'article',
+      //   loadChildren: './pages/article/article.module#ArticleModule'
+      // },
+      // {
+      //   path: 'log',
+      //   loadChildren: './pages/log/log.module#LogModule'
+      // }
+    ]
+  }
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }

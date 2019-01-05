@@ -1,0 +1,55 @@
+<app-card class="" [cardOptionBlock]='true'>
+  <!-- <p-calendar [(ngModel)]="searchItems.startTime"></p-calendar> -->
+  <div class="col-sm-12 select-box">
+    <div class="row m-b-10">
+      <div class="col-12 col-md-3 input-box m-b-20">
+        <span>手机号码：</span>
+        <input type="text" placeholder="请输入手机号码" [(ngModel)]="searchItems.mobile" maxlength="11">
+      </div>
+      <div class="col-12 col-md-3 input-box m-b-20">
+        <span>注册日期范围：</span>
+        <div class="date-box">
+          <input class="input-date" type="text" placeholder="开始时间" [(ngModel)]="searchItems.startDate" ngbDatepicker #startDate="ngbDatepicker" (click)="startDate.toggle()">
+          <i class="lj">~~</i>
+          <input class="input-date" type="text" placeholder="结束时间" [(ngModel)]="searchItems.endDate" ngbDatepicker #endDate="ngbDatepicker" (click)="endDate.toggle()">
+        </div>
+      </div>
+      <div class="col-12 col-md-3 input-box m-b-20">
+          <span>注册来源：</span>
+          <select [(ngModel)]="searchItems.registerSource">
+            <option value="">所有来源</option>
+            <option value="APP">APP</option>
+            <option value="网页">网页</option>
+          </select>
+        </div>
+      <div class="col-12 col-md-3 input-box float-right search-btn">
+        <span>&nbsp;</span>
+        <button class="btn btn-primary ripple light" (click)="search(1,'search')">
+          <i class="icofont icofont-search-alt-2"></i>查询</button>
+        <button class="btn btn-primary btn-outline-primary ripple light" (click)="reset()">
+          <i class="icofont icofont-close"></i>重置</button>
+      </div>
+    </div>
+  </div>
+</app-card>
+
+<app-card [title]="'会员列表'">
+  <ngx-datatable class="data-table dt-chk" [rows]="rows" [columnMode]="'force'" [scrollbarH]="true" [headerHeight]="50" [rowHeight]="'auto'"
+    [limit]="10">
+    <ngx-datatable-column [sortable]="false" name="手机号码" prop="mobile"></ngx-datatable-column>
+    <ngx-datatable-column [sortable]="false" name="头像" prop="headUrl">
+      <ng-template ngx-datatable-cell-template let-row="row">
+        <img style="height: 50px" src="{{row.headUrl}}" alt="">
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column [sortable]="false" name="邀请人" prop="inviterid"></ngx-datatable-column>
+    <ngx-datatable-column [sortable]="false" name="注册来源" prop="registerSource"></ngx-datatable-column>
+    <ngx-datatable-column [sortable]="false" name="注册时间" prop="registerTime"></ngx-datatable-column>
+    <ngx-datatable-column [sortable]="false" name="最近登录时间" prop="lastLoginTime"></ngx-datatable-column>
+    <ngx-datatable-column [sortable]="false" name="最近登录终端" prop="lastLoginTerminal"></ngx-datatable-column>
+    <ngx-datatable-column [sortable]="false" name="最近登录地点" prop="lastLoginArea"></ngx-datatable-column>
+  </ngx-datatable>
+  <app-page-nav (getCurrentPage)="changePage($event)" [totalPage]='totalPage' [pageNum]='pageNum' [total]='total'></app-page-nav>
+</app-card>
+
+<ng2-toasty [position]="toast.position"></ng2-toasty>

@@ -1,0 +1,146 @@
+import { Component, OnInit } from '@angular/core';
+import { NgbDateParserFormatter, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap'
+import { Router} from '@angular/router'
+
+import { InterfaceService } from '../../../shared/services/http/interfaces.service'
+import { PopService } from '../../../shared/services/pop/pop.service'
+
+@Component({
+  selector: 'app-resource',
+  templateUrl: './resource.component.html',
+  styleUrls: ['./resource.component.scss']
+})
+export class ResourceComponent implements OnInit {
+
+  public rows = []
+  public selected = []
+  public total
+  public totalPage
+  public pageNum
+
+  public searchItems
+	public items
+  public flag = true
+  
+  public releasedType: Number
+  public list: any
+  public moselMessage: String
+  public isRelease: Boolean
+  public releaseMessage: String
+
+  constructor(
+    public parserFormatter: NgbDateParserFormatter,
+    private interfaceService: InterfaceService,
+    private popService: PopService,
+    private router: Router
+  ) {
+    this.searchItems = new Items()
+		this.items = new Items()
+  }
+
+  ngOnInit() {
+    this.isRelease = false
+    this.search(1, '')
+  }
+  
+  dataJud() {
+		if (this.searchItems.starttime && this.searchItems.endtime) {
+			if (
+				this.searchItems.starttime.year > this.searchItems.endtime.year ||
+				this.searchItems.starttime.month > this.searchItems.endtime.month ||
+				this.searchItems.starttime.day > this.searchItems.endtime.day
+			) {
+        this.popService.addToast({msg:'开始时间不能大于结束时间！',type:'error'})
+				this.flag = false
+			} else {
+				this.flag = true
+			}
+		}
+	}
+  search(e, type) {
+		if (!type) {
+			this.searchItems = new Items()
+		}
+    this.dataJud()
+    this.selected = []
+		if (this.flag) {
+			this.items.starttime = this.searchItems.starttime ? this.parserFormatter.format(this.searchItems.starttime)+" 00:00:00" : ""
+			this.items.endtime = this.searchItems.endtime ? this.parserFormatter.format(this.searchItems.endtime)+" 00:00:00" : ""
+			this.items.title = this.searchItems.title
+      let searchItems = Object.assign(this.items, { pageSize: 10 ,pageNum: e })
+			this.interfaceService.getOriginalArticleDataGrid(searchItems).then((result) => {
+				this.rows = result.list
+				this.total = result.count
+        this.totalPage = Math.ceil(result.count/10)
+        this.pageNum = e
+			})
+		}
+  }
+
+  reset() {
+		this.searchItems = new Items()
+	}
+
+	changePage(e) {
+    this.pageNum = e
+		this.search(e, '1')
+  }
+  //表格选中项
+  onSelect({ selected }) {
+    this.selected = selected
+    // for (let i = 0; i < this.rows.length; i++) {
+    //   for (let j = 0; j < selected.length; j++) {
+    //     if(this.rows[i].id == selected[j].id){
+    //       this.selected.push(selected[j])
+    //     }
+    //   }
+    // }
+  }
+  //是否批量添加
+  isBatch(row,type){
+    this.releasedType = type;
+    this.list = []
+    if(type == 1){
+      this.moselMessage = "你确定要将当前页面选中的 " + this.selected.length + " 篇文章加入待发布列表吗？"
+      this.list = this.selected.map(item => {
+        return item.id
+      })
+    }else {
+      this.moselMessage = "你确定要将 " + row.title + " 加入待发布列表吗？"
+      this.list.push(row.id)
+    }
+  }
+  showPop (){
+    this.popService.addToast({ type: 'warning', msg: '请选择文章' })
+  }
+  //加入待发布列表
+  addToBereleasedList (){
+    let params = {
+      list: this.list
+    }
+    if(this.releasedType == 1){
+      this.releaseMessage = "批量加入待发布列表成功，是否需要立即发布文章？"
+    }else {
+      this.releaseMessage = "加入待发布列表成功，是否立即发布文章？"
+    }
+    this.interfaceService.addOriginalArticle(params).then((result) => {
+      if(result){
+        this.isRelease = true
+      }
+    })
+  }
+  //发布文章
+  release (){
+    this.router.navigateByUrl("/article/publish")
+    this.isRelease = false
+  }
+  //关闭弹窗
+  closeModal (){
+    this.isRelease = false
+    this.search(this.pageNum, '1')
+  }
+}
+
+class Items {
+	constructor(public starttime?: NgbDateStruct, public endtime?: NgbDateStruct, public title?: String) {}
+}
